@@ -1,6 +1,6 @@
 (function(window, angular){
 
-	if (angular !== undef) {
+	if (angular !== undefined) {
 
 		var module = angular.module('parse-angular', []);
 
