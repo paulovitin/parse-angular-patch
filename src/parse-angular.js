@@ -1,6 +1,4 @@
-(function(window, undef){
-
-	var angular = window.angular;
+(function(window, angular){
 
 	if (angular !== undef) {
 
@@ -235,4 +233,4 @@
 
 	}
 
-})(this);
+})(window, window.angular);
