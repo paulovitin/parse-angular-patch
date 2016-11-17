@@ -6,6 +6,8 @@
 
 		module.run(['$q', '$window', function($q, $window){
 
+			console.log($window.Parse);
+
 
 			// Process only if Parse exist on the global window, do nothing otherwise
 			if (!angular.isUndefined($window.Parse) && angular.isObject($window.Parse)) {
@@ -21,10 +23,6 @@
 					"Object": {
 						prototype: ['save', 'fetch', 'destroy'],
 						static: ['saveAll', 'destroyAll']
-					},
-					"Collection": {
-						prototype: ['fetch'],
-						static: []
 					},
 					"Query": {
 						prototype: ['find', 'first', 'count', 'get'],
@@ -168,62 +166,6 @@
 
 					return newClass;
 				}
-
-
-
-				/// Keep references & init collection class map
-				Parse.Collection._classMap = {};
-
-				var origExtend = Parse.Collection.extend;
-
-				/// Enhance Collection 'extend' to store their subclass in a map
-				Parse.Collection.extend = function(opts) {
-
-					var extended = origExtend.apply(this, arguments);
-
-					if (opts && opts.className) {
-						Parse.Collection._classMap[opts.className] = extended;
-					}
-
-					return extended;
-
-				};
-
-
-				Parse.Collection.getClass = function(className) {
-					return Parse.Collection._classMap[className];
-				}
-
-
-				/// Enhance Collection prototype
-				Parse.Collection.prototype = angular.extend(Parse.Collection.prototype, {
-					// Simple paginator
-					loadMore: function(opts) {
-
-						if (!angular.isUndefined(this.query)) {
-
-							// Default Parse limit is 100
-							var currentLimit = this.query._limit == -1 ? 100 : this.query._limit;
-							var currentSkip = this.query._skip;
-
-							currentSkip += currentLimit;
-
-							this.query.skip(currentSkip);
-
-							var _this = this;
-
-							return this.query.find()
-							.then(function(newModels){
-								if (!opts || opts.add !== false) _this.add(newModels)
-								if (newModels.length < currentLimit) _this.hasMoreToLoad = false;
-								return newModels;
-							});
-
-						}
-
-					}
-
-				});
 
 			}
 
